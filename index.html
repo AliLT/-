@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Форма обратной связи</title>
+    <style>
+        /* CSS для стилизации формы */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .error {
+            color: red;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        /* Honeypot поле скрыто */
+        .honeypot {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Форма обратной связи</h2>
+    <form id="feedbackForm" action="/submit-feedback" method="POST" enctype="application/x-www-form-urlencoded">
+        <label for="name">Имя:</label>
+        <input type="text" id="name" name="name" required>
+        <div class="error" id="nameError"></div>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <div class="error" id="emailError"></div>
+
+        <label for="message">Сообщение:</label>
+        <textarea id="message" name="message" rows="5" required></textarea>
+        <div class="error" id="messageError"></div>
+
+        <!-- Honeypot поле для защиты от спама -->
+        <div class="honeypot">
+            <label for="honeypot">Не заполняйте это поле (honeypot):</label>
+            <input type="text" id="honeypot" name="honeypot">
+        </div>
+
+        <input type="submit" value="Отправить">
+    </form>
+</div>
+
+<script>
+    // JavaScript для клиентской валидации полей
+    document.getElementById('feedbackForm').addEventListener('submit', function(event) {
+        let isValid = true;
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const message = document.getElementById('message').value.trim();
+
+        // Очистка ошибок
+        document.getElementById('nameError').textContent = '';
+        document.getElementById('emailError').textContent = '';
+        document.getElementById('messageError').textContent = '';
+
+        // Валидация имени
+        if (name === '') {
+            document.getElementById('nameError').textContent = 'Имя обязательно для заполнения.';
+            isValid = false;
+        }
+
+        // Валидация email
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (email === '') {
+            document.getElementById('emailError').textContent = 'Email обязательно для заполнения.';
+            isValid = false;
+        } else if (!emailPattern.test(email)) {
+            document.getElementById('emailError').textContent = 'Некорректный формат email.';
+            isValid = false;
+        }
+
+        // Валидация сообщения
+        if (message === '') {
+            document.getElementById('messageError').textContent = 'Сообщение обязательно для заполнения.';
+            isValid = false;
+        }
+
+        if (!isValid) {
+            event.preventDefault(); // Остановка отправки формы при ошибках
+        }
+    });
+</script>
+
+</body>
+</html>
